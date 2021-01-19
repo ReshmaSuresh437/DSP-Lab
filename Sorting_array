@@ -1,0 +1,57 @@
+#include<stdio.h>
+void sort(int a[], int n)       		//function to sort the array
+{
+	for(int i=0;i<n; i++)
+	{
+		for(int j=i+1;j<n;j++)
+		{
+			int temp;
+			if(a[i]>a[j])			//swap the larger element with the smaller
+			{
+				temp = a[i];
+                    			a[i] = a[j];
+                    			a[j] = temp;
+			}
+		}
+	}
+ 	for(int i=0;i<n;i++)			//print the sorted array
+	{
+		printf("%d ",a[i]);
+	}
+	printf("\n\n");	
+}
+
+void position(int a[], int n, int d)
+{
+	int firstindex = -1;
+      	int lastindex = -1;
+      	for (int i = 0; i <n; i++) 
+	{
+         		if (a[i] ==d && firstindex == -1) 		//Assign only first time in firstindex
+		{
+               		firstindex = i;
+        		}	
+                  	if (a[i] == d && firstindex != -1) 		//Assign value at lastindex
+		{
+                 		lastindex = i;
+        		}
+	}
+	printf("Start position: %d\n",firstindex+1);
+	printf("Last position: %d\n",lastindex+1);
+}
+void main()
+{
+	int arr[100], size, value;
+	printf("Enter the array size: ");
+	scanf("%d",&size);
+	printf("\nEnter the array elements: ");
+	for(int i=0;i<size;i++)
+	{
+		scanf("%d",&arr[i]);
+	}
+	printf("\nArray sorted in ascending order is:  ");
+	sort(arr,size);
+	printf("\nEnter the element whose position is to be displayed: ");
+	scanf("%d",&value);
+	position(arr,size,value);
+}
