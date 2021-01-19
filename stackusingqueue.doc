@@ -1,0 +1,109 @@
+#include<stdio.h>
+#include<stdlib.h>
+void push();
+void pop();
+void enq1(int data);
+void enq2(int data);
+int dq1();
+int dq2();
+void create();
+void display();
+int q1[100], q2[100];
+int count=0;
+int f1=-1,f2= -1;
+int r1=-1,r2= -1;
+void main()
+{
+    	int ch;
+    	printf("\n1.Push element into Stack");
+    	printf("\n2.Pop element from Stack");
+    	printf("\n3.Display the Stack");
+    	printf("\n4.Exit");
+    	create();
+  	do
+    	{
+        	printf("\nEnter choice: ");
+        	scanf("%d", &ch);
+        	switch (ch)
+        	{
+        		case 1: push();
+                		break;
+			case 2: pop();
+				break;
+                        case 3: display();
+           			break;
+                        case 4: exit(0);
+                        default: printf("Wrong choice");
+		}
+	 }
+        while(ch!=4);
+}
+
+void push()
+{
+	int data,i;
+	printf("Enter data into the stack: ");
+	scanf("%d", &data);
+	enq1(data);
+	count++;
+}
+void pop()
+{
+	for(int i=0;i<=count;i++)
+	{
+		enq2(dq1());
+	}
+	dq2();
+	count--;
+	
+	for(int i=0;i<=count; i++)
+	{
+		create();
+		enq1(dq2());
+	}
+	
+}
+void enq1(int data)
+{
+	f1=0;
+	q1[++r1]=data;
+}
+void enq2(int data)
+{
+	f2=0;
+	q2[++r2]= data;
+}
+int dq1()
+{
+	return(q1[f1++]);
+	
+}
+int dq2()
+{
+	return(q2[f2++]);
+	
+}
+void create()
+{
+	f1=f2= -1;
+	r1=r2= -1;
+}
+void display()
+{
+	 if(f1>=0)
+    {
+        printf("\nThe elements in STACK \n");
+        for(int i=r1; i>=0; i--)
+            printf("\n%d",q2[i]);
+        printf("\nPress Next Choice");
+    }
+    else
+    {
+        printf("\n The STACK is empty");
+    }
+}
+
+
+
+
+
