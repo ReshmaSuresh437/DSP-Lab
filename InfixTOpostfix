@@ -1,0 +1,179 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<ctype.h>
+#include<string.h>
+char infix[50];
+char s[50];
+char in[50];
+int top1=-1;
+struct node
+{
+    int data;
+    char c;
+    int type;
+    struct node* next;
+};
+struct node*top=NULL;
+
+int priority(char ch)
+{   
+    switch(ch)
+    {
+        case '(': return 0; 
+                  break;
+        case '+':
+        case '-': return 1; 
+                  break;
+        case '*':
+        case '/':
+        case '%': return 2; 
+                  break;
+    }
+    return 0;
+}
+
+void push_digit(int n)
+{
+    struct node*new=(struct node*)malloc(sizeof(struct node));
+    new->data=n;
+    new->next=NULL;
+    new->type=0;
+    if(top==NULL)
+    {
+        top=new;
+    }
+    else
+    {
+        new->next=top;
+        top=new;
+    }
+}
+
+void push_character(char p)
+{
+    struct node*new=(struct node*)malloc(sizeof(struct node));
+    new->data=p;
+    new->next=NULL;
+    new->type=1;
+    if(top==NULL)
+    {
+        top=new;
+    }
+    else
+    {
+        new->next=top;
+        top=new;
+    }
+}
+
+void push_op(char p)
+{
+    s[++top1]=p;
+}
+
+char pop()
+{
+    if(top1==-1)
+    {
+        return -1;
+    }
+    else
+    { 
+        return s[top1--];
+    }
+
+}
+int main(void)
+{
+    int i=0;
+    int count=-1;
+    printf("Please enter an infix expression\n");
+    scanf("%[^\n]%*c",infix);
+    int len=strlen(infix);
+    for(i=len-1; i>=0; i--)
+    {
+        if(infix[i]==' ')
+            continue;
+
+        if(isdigit(infix[i]))
+        {
+            int d=(infix[i]-'0')+0;
+            i--;
+            if(isdigit(infix[i]))
+            {
+                d=(infix[i]-'0')*10+d;
+                i--;
+                if(isdigit(infix[i]))
+                {
+                    d=(infix[i]-'0')*100+d;
+                    i--;
+                    if(isdigit(infix[i]))
+                    {
+                        d=(infix[i]-'0')*1000+d;
+                        push_digit(d);
+                    }
+                    else
+                    {
+                        i++;
+                        push_digit(d);
+                    }
+                }
+                 else
+                {
+                    i++;
+                    push_digit(d);
+                }
+            }
+            else
+            {
+                i++;
+                push_digit(d);
+            }
+        }
+        else
+            push_character(infix[i]);
+    }
+    
+    struct node*temp=top;
+    while(temp!=NULL)
+    {
+        char c;
+        if(temp->data=='('||temp->data==')'||temp->data=='+'||temp->data=='-'||temp->data=='*'||temp->data=='/'||temp->data=='^'||temp->data=='%')
+        {
+            if(temp->data=='(')
+            {
+                push_op(temp->data);
+            }
+            else if(temp->data==')')
+            {   
+                while((c=pop())!='(')
+                {
+                    printf("%c ",c);
+                }
+            }       
+            else
+            {
+                while(priority(s[top1])>=priority(temp->data))
+                {
+                    printf("%c ",pop());
+                }
+                push_op(temp->data);
+            }
+        }
+        else if(temp->type)
+        {
+            printf("%c ",temp->data);
+        }
+        else
+        {
+            printf("%d ",temp->data);
+        }
+        temp=temp->next;
+    }
+    
+    while(top1!=-1)
+    {
+        printf("%c ",pop());
+    }
+    return 0;
+}
