@@ -1,0 +1,125 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+	struct node *p;
+	int data;
+	struct node *q;
+};
+struct node* r(int item)
+{
+	struct node *t=(struct node*) malloc(sizeof(struct node));
+	t->data=item;
+	t->q=NULL;
+	t->p=NULL;
+	return t;
+}
+int get_max(int a[],int n)
+{
+	int max=a[0];
+	for(int i=1;i<n;i++)
+		if(max<a[i]) max=a[i];
+		
+		return max;
+}
+int get_digits(int n)
+{
+	int count=0;
+	while(n!=0)
+	{
+		n=n/10;
+		count++;
+	}
+	return count;
+}
+struct node* store(int a[],int n)
+{
+	struct node *head=r(a[0]);
+	struct node *t;
+	for(int i=1;i<n;i++)
+	{
+		struct node *new=r(a[i]);
+		t=head;
+		while(t->q!=NULL)
+		{
+		    t=t->q;
+		}
+		t->q=new;
+		new->p=t;
+	}
+	return head;
+}
+void radix(struct node *head,int d)
+{
+    for(int i=1, j=1; j<=d; i=i*10, j++)
+	{
+	    struct node *compare;
+	    struct node *current;
+	    current=head->q;
+	    int num1, num2;
+	    while(current!=NULL)
+	    {
+		    int key=current->data;
+		    int num1=current->data/i;
+		    num1=num1%10;
+		    compare=current->p;
+		    num2=compare->data/i;
+		    num2=num2%10;
+		    while(compare!=NULL && num2>num1)
+		    {
+			    (compare->q)->data=compare->data;
+			    compare=compare->p;
+			    if(compare!=NULL)
+			    {
+			        num2=compare->data/i;
+			        num2=num2%10;
+			    }
+		    }
+		    if(compare!=NULL)
+		    {
+		        (compare->q)->data=key;
+		    }
+		    else
+		    {
+		          head->data=key;
+		    }
+		    current=current->q;
+	    }   
+    }
+}
+void display(struct node *t)
+{
+	while(t!=NULL)
+	{
+		printf("%d ",t->data);
+		t=t->q;
+	}
+}
+
+int main()
+{
+	int a[100],n,i;
+	printf("enter no.of elements: ");
+	scanf("%d",&n);
+	for(i=0;i<n;i++) 
+	    scanf("%d",&a[i]);
+	if(n<=0) 
+	{
+		printf("Invalid input");
+		return 0;
+	}
+	for(i=0;i<n;i++) 
+	{
+	    if(a[i]<0)
+	    {
+	        printf("Invalid input");
+		    return 0;	
+	    }
+    }
+	int max=get_max(a,n);
+	int d=get_digits(max);
+	struct node *head=store(a,n);
+	radix(head,d);
+	display(head);
+	return 0;
+}
