@@ -1,0 +1,155 @@
+#include<stdio.h>
+#include<malloc.h>
+#include<stdlib.h>
+#include<stdbool.h>
+struct node 					//Structure for a node: value and next node
+{
+  	int value;
+  	struct node *next;
+};
+void insert();
+void display();
+void delete();
+int count();
+int search();
+typedef struct node DATA_NODE;
+DATA_NODE *head_node, *first_node, *temp_node = 0, *prev_node, next_node;
+int data;
+int main() 
+{
+  	int ch = 0;
+	printf("Singly Linked List Operations\n");
+	do							// List operations for user to perform
+	{
+    		printf("1.Insert \n");
+    		printf("2.Delete\n");
+    		printf("3.Display\n");
+    		printf("4.Search\n");
+		printf("5.Exit\n");
+    		printf("\nEnter your choice: ");
+    		scanf("%d", &ch);
+    		switch (ch) 
+		{
+      			case 1:	insert();
+        				break;
+      			case 2:	delete();
+        				break;
+      			case 3:	display();
+        				break;
+      			case 4:	search();
+        				break;
+			case 5: exit(1);
+      			default: printf("Wrong Choice\n");
+    		}
+  	}while (ch!= 5); 
+
+  return 0;
+}
+void insert() 
+{
+  	printf("\nEnter Element for Insert Linked List: ");
+ 	scanf("%d", &data);
+	temp_node = (DATA_NODE *) malloc(sizeof (DATA_NODE));   //new memory for node
+	temp_node->value = data;
+	if (first_node == 0) 
+	{
+    		first_node = temp_node;	//keep the first node as temp which has new value
+  	} 
+	else 
+	{
+    		head_node->next = temp_node;    
+  	}
+  	temp_node->next = 0;
+  	head_node = temp_node;
+  	fflush(stdin);
+}
+void delete() 
+{
+  	int countvalue, pos, i = 0;
+  	countvalue = count();
+  	temp_node = first_node;
+	printf("\nEnter Position of the element to be deleted: ");
+  	scanf("%d", &pos);
+	if (pos > 0 && pos <= countvalue) 
+	{
+    		if (pos == 1) 					//if first node to be deleted
+		{
+      			temp_node = temp_node -> next;
+      			first_node = temp_node;
+      			printf("\nDeleted Successfully\n\n");
+    		} 
+		else 
+		{
+      			while (temp_node != 0) 
+			{
+        				if (i == (pos - 1))
+				{
+          					prev_node->next = temp_node->next;
+          					if(i == (countvalue - 1))		
+          					{
+			  			head_node = prev_node;
+		  			}
+          					printf("\nDeleted Successfully \n\n");
+          					break;
+        				} 
+				else 
+				{
+          					i++;
+          					prev_node = temp_node;
+          					temp_node = temp_node -> next;
+        				}
+      			}
+    		}
+else
+    		printf("\nInvalid Position \n\n");
+}
+
+void display()
+{
+  	int count = 0;
+  	temp_node = first_node;
+  	while (temp_node != 0) 
+	{
+    		printf("%d\n", temp_node->value);  		//temp node value printed
+    		count++;
+    		temp_node = temp_node -> next;	//move to next node until the next pointer becomes null
+  	}
+	printf("\n");
+}
+
+int count() 					//function to count the number of nodes
+{
+  	int count = 0;
+  	temp_node = first_node;
+  	while (temp_node != 0)
+	{
+    		count++;
+    		temp_node = temp_node -> next;
+  	}
+  	return count;
+}
+
+int search()
+{ 	
+	bool flag = false; 
+	int key;	
+	printf("\nEnter the key to be searched: ");
+	scanf("%d", &key);
+	temp_node = first_node;
+	while(temp_node != 0)
+	{
+		if(temp_node->value ==key)		/*if the node is equal to the search value print it, make 
+		{						flag true and exit from the loop*/
+			printf("%d in the list\n\n",key);
+			flag= true;
+			break;
+		}
+		temp_node = temp_node -> next;    		 //else keep traversing the list
+	}
+	if(!flag)
+	{
+		printf("%d not in the list\n\n",key);		//if flag is false print search value not in list
+	}
+	
+}
+
