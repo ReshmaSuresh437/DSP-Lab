@@ -82,25 +82,25 @@ void delete()
 		{
       			while (temp_node != 0) 
 			{
-        				if (i == (pos - 1))
+        			if (i == (pos - 1))
 				{
-          					prev_node->next = temp_node->next;
-          					if(i == (countvalue - 1))		
-          					{
+          				prev_node->next = temp_node->next;
+          				if(i == (countvalue - 1))		
+          				{
 			  			head_node = prev_node;
 		  			}
-          					printf("\nDeleted Successfully \n\n");
-          					break;
-        				} 
+          				printf("\nDeleted Successfully \n\n");
+          				break;
+        			} 
 				else 
 				{
-          					i++;
-          					prev_node = temp_node;
-          					temp_node = temp_node -> next;
-        				}
+          				i++;
+          				prev_node = temp_node;
+          				temp_node = temp_node -> next;
+        			}
       			}
     		}
-else
+	else
     		printf("\nInvalid Position \n\n");
 }
 
