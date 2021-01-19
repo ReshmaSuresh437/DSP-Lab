@@ -1,0 +1,79 @@
+#include<stdio.h>
+  
+int postIndex = 0; 
+int top=-1; 
+int search(int in[], int data,int n) 
+{ 
+    int i = 0; 
+    for (i = 0; i < n; i++) 
+        if (in[i] == data) 
+            return i; 
+    return i; 
+} 
+void push(int stack[], int x, int n)
+{
+     if(top>n)
+    {
+        printf("\nSTACK overflow");
+        
+    }
+    else
+    {
+        top++;
+        stack[top]=x;
+    }
+}
+void pop()
+{
+    if(top<=-1)
+    {
+        printf("\nerror");
+    }
+    else
+    {
+        top--;
+    }
+}
+
+void fillPre(int in[], int post[], int inStrt, 
+            int inEnd, int s[],int n) 
+{ 
+    if (inStrt > inEnd) 
+        return; 
+    int val = post[postIndex]; 
+    int inIndex = search(in, val, n); 
+    postIndex--; 
+    fillPre(in, post, inIndex + 1, inEnd, s, n); 
+    fillPre(in, post, inStrt, inIndex - 1, s, n); 
+    push(s, val,n); 
+} 
+void printPreMain(int in[], int post[],int n) 
+{ 
+    int len = n; 
+    postIndex = len - 1; 
+    int s[100] ; 
+    fillPre(in, post, 0, len - 1, s, n); 
+    while (top!=-1) 
+    { 
+        printf("%d ",s[top]);
+        pop(); 
+    } 
+} 
+
+int main() 
+{ 
+    int inorder[100],postorder[100],n,m;
+    printf("enter the  array size: ");
+    scanf("%d", &n);
+    printf("\nEnter the elements of inorder:");
+    for(int i=0; i<n;i++)
+    {
+        scanf("%d",&inorder[i]);
+    }
+    printf("\nEnter the elements of postorder:");
+    for(int i=0; i<n;i++)
+    {
+            scanf("%d",&postorder[i]);
+    }
+    printPreMain(inorder, postorder,n); 
+}
