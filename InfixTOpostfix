@@ -1,179 +1,125 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<ctype.h>
-#include<string.h>
-char infix[50];
-char s[50];
-char in[50];
-int top1=-1;
-struct node
-{
-    int data;
-    char c;
-    int type;
-    struct node* next;
-};
-struct node*top=NULL;
+#include <ctype.h>
+#include <stdio.h>
+char s[100];
+int top = -1; /* Global declarations */
 
-int priority(char ch)
-{   
-    switch(ch)
-    {
-        case '(': return 0; 
-                  break;
-        case '+':
-        case '-': return 1; 
-                  break;
-        case '*':
-        case '/':
-        case '%': return 2; 
-                  break;
-    }
-    return 0;
+/* Function to remove spaces from given string */
+void RemoveSpaces(char* source) 
+{
+	char* i = source;
+	char* j = source;
+	while(*j != 0)
+	{
+ 		*i = *j++;
+ 		if(*i != ' ')
+ 			i++;
+	}
+ 	*i = 0;
 }
 
-void push_digit(int n)
-{
-    struct node*new=(struct node*)malloc(sizeof(struct node));
-    new->data=n;
-    new->next=NULL;
-    new->type=0;
-    if(top==NULL)
-    {
-        top=new;
-    }
-    else
-    {
-        new->next=top;
-        top=new;
-    }
+/* Function for PUSH operation */
+void push(char data) 
+{ 
+ 	s[++top] = data;
+}
+/* Function for POP operation */
+char pop() 
+{ 
+ 	return (s[top--]);
 }
 
-void push_character(char p)
-{
-    struct node*new=(struct node*)malloc(sizeof(struct node));
-    new->data=p;
-    new->next=NULL;
-    new->type=1;
-    if(top==NULL)
-    {
-        top=new;
-    }
-    else
-    {
-        new->next=top;
-        top=new;
-    }
+/* Function for precedence */
+int pr(char data) 
+{ 
+ 	switch (data) 	
+	{
+	case '#':
+ 		  return 0;
+ 	case '(':
+ 		  return 1;
+ 	case '+':
+ 	case '-':
+ 		  return 2;
+ 	case '*':
+ 	case '/':
+ 		  return 3;
+ 	}
 }
 
-void push_op(char p)
+/*
+* Function to convert from infix to postfix expression
+*/
+void infix_to_postfix(char *in, char *po) 
 {
-    s[++top1]=p;
+ 	char ch, data;
+ 	int i = 0, k = 0;
+ 	RemoveSpaces(in);
+ 	push('#');
+ 	while ((ch = in[i++]) != '\n')
+	 {
+ 		if (ch == '(')
+ 			push(ch);
+ 		else if (isalnum(ch))
+ 			po[k++] = ch;
+ 		else if (ch == ')') 
+		{
+ 			while (s[top] != '(')
+ 			po[k++] = pop();
+			 data= pop(); /* Remove ( *//* Operator */
+ 		} 
+		else 
+		{ 
+ 			while (pr(s[top]) >= pr(ch))
+ 			po[k++] = pop();
+ 		push(ch);
+		}
+ 	}
+ 	while (s[top] != '#') /* Pop from stack till empty */
+ 		po[k++] = pop();
+ 
+	po[k] = 0; /* Make postfix as valid string */
 }
 
-char pop()
+/*
+* Function to evaluate a postfix expression
+*/
+int eval_postfix(char *po) 
 {
-    if(top1==-1)
-    {
-        return -1;
-    }
-    else
-    { 
-        return s[top1--];
-    }
-
+ 	char ch;
+ 	int i = 0, op1, op2;
+ 	while((ch = po[i++]) != 0) 
+	{
+ 		if(isdigit(ch)) 
+ 		push(ch-'0'); /* Push the operand */
+		else 
+		{ 		/* Operator,pop two operands */
+ 			op2 = pop();
+ 			op1 = pop();
+ 			switch(ch) 
+			{
+ 				case '+' : push(op1+op2); 
+ 					   break;
+ 				case '-' : push(op1-op2); 
+ 				           break;
+ 				case '*' : push(op1*op2);
+ 					   break;
+                             	case '/' : push(op1/op2);
+ 					   break;
+				case '^' : push(op1^op2);
+					   break;
+ 			}
+ 		}
+	 }
+	return s[top];
 }
-int main(void)
-{
-    int i=0;
-    int count=-1;
-    printf("Please enter an infix expression\n");
-    scanf("%[^\n]%*c",infix);
-    int len=strlen(infix);
-    for(i=len-1; i>=0; i--)
-    {
-        if(infix[i]==' ')
-            continue;
 
-        if(isdigit(infix[i]))
-        {
-            int d=(infix[i]-'0')+0;
-            i--;
-            if(isdigit(infix[i]))
-            {
-                d=(infix[i]-'0')*10+d;
-                i--;
-                if(isdigit(infix[i]))
-                {
-                    d=(infix[i]-'0')*100+d;
-                    i--;
-                    if(isdigit(infix[i]))
-                    {
-                        d=(infix[i]-'0')*1000+d;
-                        push_digit(d);
-                    }
-                    else
-                    {
-                        i++;
-                        push_digit(d);
-                    }
-                }
-                 else
-                {
-                    i++;
-                    push_digit(d);
-                }
-            }
-            else
-            {
-                i++;
-                push_digit(d);
-            }
-        }
-        else
-            push_character(infix[i]);
-    }
-    
-    struct node*temp=top;
-    while(temp!=NULL)
-    {
-        char c;
-        if(temp->data=='('||temp->data==')'||temp->data=='+'||temp->data=='-'||temp->data=='*'||temp->data=='/'||temp->data=='^'||temp->data=='%')
-        {
-            if(temp->data=='(')
-            {
-                push_op(temp->data);
-            }
-            else if(temp->data==')')
-            {   
-                while((c=pop())!='(')
-                {
-                    printf("%c ",c);
-                }
-            }       
-            else
-            {
-                while(priority(s[top1])>=priority(temp->data))
-                {
-                    printf("%c ",pop());
-                }
-                push_op(temp->data);
-            }
-        }
-        else if(temp->type)
-        {
-            printf("%c ",temp->data);
-        }
-        else
-        {
-            printf("%d ",temp->data);
-        }
-        temp=temp->next;
-    }
-    
-    while(top1!=-1)
-    {
-        printf("%c ",pop());
-    }
-    return 0;
+void main()    		/* Main Program */
+{ 
+ 	char in[50], po[50];
+ 	printf("\nInput the infix expression: ");
+ 	fgets(in, 50, stdin);
+ 	infix_to_postfix(in, po);
+	printf("\nGiven Infix Expression: %sPostfix Expression: %s", in, po);
+ 	top = -1;
+ 	printf("\nResult of evaluation of postfix expression : %d\n", eval_postfix(po));
 }
