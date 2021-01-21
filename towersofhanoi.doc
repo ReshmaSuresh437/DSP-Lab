@@ -32,7 +32,7 @@ int main (void)
     for ( i = 1; i <= numberOfDisks; ++i )
         rod[i] = 1;
 
-    // set direction to move smallest disk
+    // set direction to move smallest disk 
 
     if ( (numberOfDisks & 1) == 0 )
         smallestDir = 1;
