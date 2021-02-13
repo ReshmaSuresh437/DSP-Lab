@@ -15,7 +15,8 @@ void floydWarshall(int graph[][v])
     	}
     	for(k=0; k<v; k++)          
     	{
-        		for(i=0; i<v; i++) 
+        		 printf("Intermediate Vertex: %d", k+1);
+                for(i=0; i<v; i++) 
         		{
             		for(j=0; j<v; j++) 
             		{
@@ -26,6 +27,7 @@ void floydWarshall(int graph[][v])
             		}
         		}
         		print(a);
+                printf("\n");
     	}
 }
 
